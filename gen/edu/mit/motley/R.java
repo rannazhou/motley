@@ -264,6 +264,7 @@ containing a value of this type.
         public static final int com_facebook_search_bar_layout=0x7f03000d;
         public static final int com_facebook_usersettingsfragment=0x7f03000e;
         public static final int home=0x7f03000f;
+        public static final int preferences=0x7f030010;
     }
     public static final class menu {
         public static final int home=0x7f090000;

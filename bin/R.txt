@@ -115,6 +115,7 @@ int layout com_facebook_placepickerfragment_list_row 0x7f03000c
 int layout com_facebook_search_bar_layout 0x7f03000d
 int layout com_facebook_usersettingsfragment 0x7f03000e
 int layout home 0x7f03000f
+int layout preferences 0x7f030010
 int menu home 0x7f090000
 int string action_settings 0x7f07001a
 int string app_id 0x7f07001b
