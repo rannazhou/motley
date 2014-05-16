@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<pre-dex-items>
+
+    <item
+        dex="/Users/ranna/Documents/Motley/motley/build/pre-dexed/debug/support-v4-19.1.0-fe930dc68beb1e566675ce71b270d4091c6c249b.jar"
+        jar="/Applications/Android Studio.app/sdk/extras/android/m2repository/com/android/support/support-v4/19.1.0/support-v4-19.1.0.jar"
+        jumboMode="false"
+        revision="19.0.3"
+        sha1="85f201b380937e61a9dce6ca90ccf6872abbfb67"/>
+    <item
+        dex="/Users/ranna/Documents/Motley/motley/build/pre-dexed/debug/classes-ac7a002cf8c62a737434dab9542b12e157db3a08.jar"
+        jar="/Users/ranna/Documents/Motley/build/exploded-aar/com.android.support/appcompat-v7/19.1.0/classes.jar"
+        jumboMode="false"
+        revision="19.0.3"
+        sha1="3499ceba05ca1f6037c6a2fad73df8f636224a28"/>
+    <item
+        dex="/Users/ranna/Documents/Motley/motley/build/pre-dexed/debug/library-2.6.0-03080244043dc73158b1ff6e88c149b72c4a21e8.jar"
+        jar="/Users/ranna/.gradle/caches/modules-2/files-2.1/com.nhaarman.listviewanimations/library/2.6.0/59351ccb0a1631d30358f6a92749a072f2df7602/library-2.6.0.jar"
+        jumboMode="false"
+        revision="19.0.3"
+        sha1="59351ccb0a1631d30358f6a92749a072f2df7602"/>
+    <item
+        dex="/Users/ranna/Documents/Motley/motley/build/pre-dexed/debug/classes-037eb87b52234a60e14f4d7dc82d2fd02d336d6b.jar"
+        jar="/Users/ranna/Documents/Motley/build/exploded-aar/com.github.castorflex.smoothprogressbar/library/0.4.0/classes.jar"
+        jumboMode="false"
+        revision="19.0.3"
+        sha1="6ca319f998430aa20c4dde97ba6df213d6cf3dd0"/>
+    <item
+        dex="/Users/ranna/Documents/Motley/motley/build/pre-dexed/debug/Parse-1.5.0-17ccdc949285f3085df0bf24df063dfbfdbabb48.jar"
+        jar="/Users/ranna/Documents/Motley/motley/libs/Parse-1.5.0/Parse-1.5.0.jar"
+        jumboMode="false"
+        revision="19.0.3"
+        sha1="8a675f7e3312d8b28188ec653bbea6d435aaa7d1"/>
+    <item
+        dex="/Users/ranna/Documents/Motley/motley/build/pre-dexed/debug/classes-d1bc8550fea90475400547822c1f7e7f3be3fe8e.jar"
+        jar="/Users/ranna/Documents/Motley/build/exploded-aar/com.github.chrisbanes.actionbarpulltorefresh/library/0.9.9/classes.jar"
+        jumboMode="false"
+        revision="19.0.3"
+        sha1="06ca4ea902f14efb76284d918edb085df33cc365"/>
+    <item
+        dex="/Users/ranna/Documents/Motley/motley/build/pre-dexed/debug/classes-a92c5df91d6ecab4c6e7660fe8655be9b341a3b4.jar"
+        jar="/Users/ranna/Documents/Motley/build/exploded-aar/com.github.gabrielemariotti.cards/library/1.6.0/classes.jar"
+        jumboMode="false"
+        revision="19.0.3"
+        sha1="dd59f15631a0446653bc4197a9afd6ee63eef42d"/>
+    <item
+        dex="/Users/ranna/Documents/Motley/motley/build/pre-dexed/debug/library-2.4.0-beac03593a871a892d8097ef7bd086defc6352b2.jar"
+        jar="/Users/ranna/.gradle/caches/modules-2/files-2.1/com.nineoldandroids/library/2.4.0/e9b63380f3a242dbdbf103a2355ad7e43bad17cb/library-2.4.0.jar"
+        jumboMode="false"
+        revision="19.0.3"
+        sha1="e9b63380f3a242dbdbf103a2355ad7e43bad17cb"/>
+    <item
+        dex="/Users/ranna/Documents/Motley/motley/build/pre-dexed/debug/classes-2ea905b6a7ba94ab44cdeadb06958cc1c3f4442f.jar"
+        jar="/Users/ranna/Documents/Motley/build/exploded-aar/com.etsy.android.grid/library/1.0.4/classes.jar"
+        jumboMode="false"
+        revision="19.0.3"
+        sha1="589fdaab008936a7b90e8332bbd49b4c010b8c0c"/>
+    <item
+        dex="/Users/ranna/Documents/Motley/motley/build/pre-dexed/debug/classes-140357b2980decece2c09f847a1bd4195a5ef122.jar"
+        jar="/Users/ranna/Documents/Motley/build/exploded-aar/com.github.gabrielemariotti.cards/library-extra/1.6.0/classes.jar"
+        jumboMode="false"
+        revision="19.0.3"
+        sha1="a4596e7120d868856e75d96a74acf7f633775060"/>
+
+</pre-dex-items>

@@ -1,0 +1,14 @@
+{
+    "applications": {
+        "Motley": {
+            "applicationId": "gPYpf4OEgnqrVMlZI9rwQQ0KIiIWayLCjH7q0CP5", 
+            "masterKey": "kE7qdRaAKjiTTulZV9XVO5MF2Ozku0jBzz8BIhFS"
+        }, 
+        "_default": {
+            "link": "Motley"
+        }
+    }, 
+    "global": {
+        "parseVersion": "1.2.18"
+    }
+}

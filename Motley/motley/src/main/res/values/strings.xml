@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Motley</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="loading">Talking to Foursquare servers…</string>
+    <string name="connected_to_foursquare">Let\'s get started:</string>
+    <string name="foursquare_not_installed_message">To do this, you’ll need the latest version of Foursquare installed.</string>
+    <string name="foursquare_reason_text">Because you checked in at\u0020</string>
+
+    <!-- URLs -->
+    <string name="foursquare_callback_url">https://foursquare.com</string>
+
+    <!-- UI layouts and things -->
+    <string name="undo_hand_to_pile_swipe_bar_text">Moved card to pile</string>
+    <string name="undo_delete_from_pile_swipe_bar_text">Deleted card from pile</string>
+
+    <!-- Secrets -->
+    <string name="secret_parse_app_id">gPYpf4OEgnqrVMlZI9rwQQ0KIiIWayLCjH7q0CP5</string>
+    <string name="secret_parse_client_key">LniNPQr3CwSKaFNIpyaM0GZOp2rqpCe89vNs6a19</string>
+    <string name="foursquare_client_id">TTCJXDW5NEQGVG3B0POP3NWWWRSDTHQAF1HVN4J1M0UJUWVC</string>
+    <string name="foursquare_client_secret">24VLRLQCZIMQB1FN3HVJZGXOUEDRBPTUKNRMZ1QOVTVHHIOK</string>
+    <string name="foursquare_push_secret">HE3FH0MMDRCRW5W2K31RDXNYJ2JHWCVZNHZ505U20TMUIQKW</string>
+
+
+
+
+
+</resources>
