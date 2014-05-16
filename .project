@@ -3,6 +3,8 @@
 	<name>Motley</name>
 	<comment></comment>
 	<projects>
+		<project>CardsUILib</project>
+		<project>FacebookSDK</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

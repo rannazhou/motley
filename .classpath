@@ -8,5 +8,6 @@
 	<classpathentry kind="lib" path="libs/gson-2.2.4-javadoc.jar"/>
 	<classpathentry kind="lib" path="libs/gson-2.2.4-sources.jar"/>
 	<classpathentry kind="lib" path="libs/gson-2.2.4.jar"/>
+	<classpathentry exported="true" kind="lib" path="/Users/ranna/Documents/workspace/cardsui-for-android/CardsUILib/bin/cardsuilib.jar" sourcepath="/CardsUILib/src"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
