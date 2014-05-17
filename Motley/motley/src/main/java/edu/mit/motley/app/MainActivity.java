@@ -91,8 +91,8 @@ public class MainActivity extends Activity implements OnRefreshListener {
         mViewSwitcher = (ViewSwitcher) findViewById(R.id.view_switcher);
 
         Parse.initialize(this, getString(R.string.secret_parse_app_id), getString(R.string.secret_parse_client_key));
-        PushService.setDefaultPushCallback(this, RenderActivity.class);
         ParseInstallation.getCurrentInstallation().saveInBackground();
+        Parse.setLogLevel(Parse.LOG_LEVEL_VERBOSE);
 
         SharedPreferences prefs = this.getSharedPreferences("edu.mit.motley", Context.MODE_PRIVATE);
         // boolean foursquare_authenticated = prefs.getBoolean(getString(R.string.foursquare_authenticated), false);
@@ -130,8 +130,7 @@ public class MainActivity extends Activity implements OnRefreshListener {
             }
         });
 
-        System.out.println("subscribing to MainActivity:");
-        PushService.subscribe(this.getApplicationContext(), "user_"+deviceId, MainActivity.class);
+        PushService.subscribe(this.getApplicationContext(), "user_"+deviceId, RenderActivity.class);
 
         setupUI();
 

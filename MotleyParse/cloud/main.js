@@ -14,9 +14,11 @@
 
 var express = require('express');
 var app = express();
+
 // Global app configuration section
-app.use(express.bodyParser());
-app.use(express.json());
+//app.use(express.json());
+//app.use(express.bodyParser());
+
 app.use(express.urlencoded());
 
 var fsqVersion = "20140515";
@@ -26,60 +28,45 @@ app.post('/checkin',  function(req, res) {
 	//console.log(req);
 	//res.send(200);
 	// if (req.body.secret === "HE3FH0MMDRCRW5W2K31RDXNYJ2JHWCVZNHZ505U20TMUIQKW") {
-	console.log(req.url);
-	var checkin1 = req.checkin;
-	console.log("Req.checkin = "+checkin);
-
-	var checkin1 = req.body.checkin;
-	console.log("Req body = "+checkin);
-
-	var checkin = req.params.checkin;
-	console.log("Req = "+checkin);
-
-	
-	// var userId = checkin.user.id;
-	// var venueId = checkin.venue.id;
-	// var venueName = checkin.venue.name;
-	
-	// var venueCats = req.body.venue.categories;
+	var checkin = JSON.parse(req.body.checkin);
+	var userId = checkin.user.id;
+	var venueId = checkin.venue.id;
+	var venueName = checkin.venue.name;
+	var venueCategory = checkin.venue.categories.name;
 	// for (cat in categories) {
 
 	// }
 	// console.log("user is "+ userId +" and they checked into "+venueName);
 	
 
-	// var FoursquareUser = Parse.Object.extend("FoursquareUser");
-	// var query = new Parse.Query(FoursquareUser);
-	// query.equalTo("foursquareUserId", userId);
+	var FoursquareUser = Parse.Object.extend("FoursquareUser");
+	var query = new Parse.Query(FoursquareUser);
+	query.equalTo("foursquareUserId", userId);
 
-	// query.find({
-	// 	success: function(results) {
-	// 		//alert("Successfully retrieved " + results.length + " scores.");
-	// 		// Do something with the returned Parse.Object values
-
-	// 		var object = results[0];
-	// 		var deviceId = object.get("deviceId");
-			
-	// 		console.log("Sending push notification to device "+deviceId);
-	// 		Parse.Push.send({
-
-	// 			channels: [ "u_"+deviceId ],
-	// 		  	data: {
-	// 		    	alert: "New cards available!",
-	// 		    	title: "Motley"
-	// 	 		}}, 
-	// 		 	{ success: function() {
-	// 		    	// Push was successful
-	// 	  		},
-	// 		  	error: function(error) {
-	// 		    	// Handle error
-	// 	  		}
-	// 		});
-	// 	},
-	// 	error: function(error) {
-	// 		alert("Error: " + error.code + " " + error.message);
-	// 	}
-	// });
+	query.find({
+		success: function(results) {
+			var object = results[0];
+			var deviceId = object.get("deviceId");
+			console.log("Sending push notification to device "+deviceId);
+			Parse.Push.send({
+				channels: [ "user_"+deviceId ],
+			  	data: {
+			    	alert: "New cards available!",
+			    	title: "Motley"
+			    }
+			}, 
+			 	{ success: function() {
+			    	console.log("Push successful")
+		  		},
+			  	error: function(error) {
+			    	console.log("Nope. DENIED. asldfkasdf")
+		  		}
+			});
+		},
+		error: function(error) {
+			alert("Error: " + error.code + " " + error.message);
+		}
+	});
 		
 
 	// Use Parse JavaScript SDK to create a new message and save it.
