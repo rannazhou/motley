@@ -15,6 +15,7 @@
     <uses-permission android:name="edu.mit.motley.permission.C2D_MESSAGE" />
 
     <application
+        android:name="edu.mit.motley.app.Application"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
@@ -27,7 +28,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <!--<activity android:name="edu.mit.motley.app.RenderActivity"></activity>-->
+        <!--<activity android:name="edu.mit.motley.app.RenderActivity"-->
+            <!--android:theme="@android:style/Theme.NoDisplay"/>-->
         <activity android:name="com.foursquare.android.nativeoauth.TokenExchangeActivity"
             android:theme="@android:style/Theme.Dialog" />
 
@@ -38,6 +40,11 @@
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
                 <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
                 <category android:name="edu.mit.motley" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name="edu.mit.motley.app.MotleyBroadcastReceiver" android:exported="false">
+            <intent-filter>
+                <action android:name="edu.mit.motley.NEW_CARDS" />
             </intent-filter>
         </receiver>
     </application>

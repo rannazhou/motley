@@ -23,12 +23,10 @@ import com.foursquare.android.nativeoauth.FoursquareUnsupportedVersionException;
 import com.foursquare.android.nativeoauth.model.AccessTokenResponse;
 import com.foursquare.android.nativeoauth.model.AuthCodeResponse;
 import com.parse.FindCallback;
-import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseInstallation;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
-import com.parse.PushService;
 
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
@@ -36,6 +34,9 @@ import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -48,12 +49,9 @@ import it.gmariotti.cardslib.library.internal.Card;
 import it.gmariotti.cardslib.library.internal.CardArrayAdapter;
 import it.gmariotti.cardslib.library.view.CardListView;
 import it.gmariotti.cardslib.library.view.listener.UndoBarController;
-import uk.co.senab.actionbarpulltorefresh.library.ActionBarPullToRefresh;
-import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshLayout;
-import uk.co.senab.actionbarpulltorefresh.library.listeners.OnRefreshListener;
 
 
-public class MainActivity extends Activity implements OnRefreshListener {
+public class MainActivity extends Activity {
     private static final int REQUEST_CODE_FSQ_CONNECT = 200;
     private static final int REQUEST_CODE_FSQ_TOKEN_EXCHANGE = 201;
 
@@ -62,6 +60,8 @@ public class MainActivity extends Activity implements OnRefreshListener {
 
     private CardArrayAdapter handCardArrayAdapter;
     private CardArrayAdapter pileCardArrayAdapter;
+
+    private SharedPreferences sPrefs;
 
     public String userlessReqParams;
 
@@ -81,6 +81,8 @@ public class MainActivity extends Activity implements OnRefreshListener {
 //        } catch (PackageManager.NameNotFoundException e) {
 //        } catch (NoSuchAlgorithmException e) {
 //        }
+        sPrefs = getSharedPreferences("edu.mit.motley", Context.MODE_PRIVATE);
+
 
         userlessReqParams = "&client_id="+getString(R.string.foursquare_client_id)+"&client_secret="+getString(R.string.foursquare_client_secret);
 
@@ -90,49 +92,54 @@ public class MainActivity extends Activity implements OnRefreshListener {
         setContentView(R.layout.main);
         mViewSwitcher = (ViewSwitcher) findViewById(R.id.view_switcher);
 
-        Parse.initialize(this, getString(R.string.secret_parse_app_id), getString(R.string.secret_parse_client_key));
-        ParseInstallation.getCurrentInstallation().saveInBackground();
-        Parse.setLogLevel(Parse.LOG_LEVEL_VERBOSE);
-
-        SharedPreferences prefs = this.getSharedPreferences("edu.mit.motley", Context.MODE_PRIVATE);
-        // boolean foursquare_authenticated = prefs.getBoolean(getString(R.string.foursquare_authenticated), false);
-
         final Activity mMainActivity = this;
-        final Button foursquare_reg_button = (Button)findViewById(R.id.btnLogin);
-        foursquare_reg_button.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
+        if (sPrefs.getBoolean("foursquare_authenticated", false)) {
+            System.out.println("Already authenticated");
+            mViewSwitcher.showNext();
+        } else {
+            final Button foursquare_reg_button = (Button) findViewById(R.id.btnLogin);
+            foursquare_reg_button.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
 
-                ParseQuery<ParseObject> query = ParseQuery.getQuery("FoursquareUser");
-                query.whereEqualTo("deviceId", deviceId);
-                query.findInBackground(new FindCallback<ParseObject>() {
-                    public void done(List<ParseObject> resultsList, ParseException e) {
-                    if (resultsList != null && resultsList.size()>0) { //user exists
-                        System.out.println("USER EXISTS!");
-                    }
-                    else {
-                        System.out.println("USER DOESN'T EXIST!");
-                        Intent intent = FoursquareOAuth.getConnectIntent(mMainActivity.getApplicationContext(), getString(R.string.foursquare_client_id));
+                    ParseQuery<ParseObject> query = ParseQuery.getQuery("FoursquareUser");
+                    query.whereEqualTo("deviceId", deviceId);
+                    query.findInBackground(new FindCallback<ParseObject>() {
+                        public void done(List<ParseObject> resultsList, ParseException e) {
+                            if (resultsList != null && resultsList.size() > 0) {
+                                //this is just a backup, should never get in here except the first time
+                                System.out.println("USER EXISTS IN PARSE!");
+                            } else {
+                                System.out.println("USER DOESN'T EXIST!");
+                                Intent intent = FoursquareOAuth.getConnectIntent(mMainActivity.getApplicationContext(), getString(R.string.foursquare_client_id));
 
-                        // If the device does not have the Foursquare app installed, we'd
-                        // get an intent back that would open the Play Store for download.
-                        // Otherwise we start the auth flow.
-                        if (FoursquareOAuth.isPlayStoreIntent(intent)) {
-                            toastMessage(MainActivity.this, getString(R.string.foursquare_not_installed_message));
-                            startActivity(intent);
-                        } else {
-                            startActivityForResult(intent, REQUEST_CODE_FSQ_CONNECT);
+                                // If the device does not have the Foursquare app installed, we'd
+                                // get an intent back that would open the Play Store for download.
+                                // Otherwise we start the auth flow.
+                                if (FoursquareOAuth.isPlayStoreIntent(intent)) {
+                                    toastMessage(MainActivity.this, getString(R.string.foursquare_not_installed_message));
+                                    startActivity(intent);
+                                } else {
+                                    startActivityForResult(intent, REQUEST_CODE_FSQ_CONNECT);
+                                }
+                            }
+
+                            mViewSwitcher.showNext();
+                            SharedPreferences.Editor mEditor = sPrefs.edit();
+                            mEditor.putBoolean("foursquare_authenticated", true);
+                            mEditor.commit();
                         }
-                    }
+                    });
+                }
 
-                    mViewSwitcher.showNext();
-                    }
-                });
-            }
-        });
+            });
 
-        PushService.subscribe(this.getApplicationContext(), "user_"+deviceId, RenderActivity.class);
+        }
+
+//        PushService.subscribe(this.getApplicationContext(), "user_"+deviceId, MainActivity.class);
 
         setupUI();
+
+//        saveCards();
 
     }
 
@@ -148,14 +155,14 @@ public class MainActivity extends Activity implements OnRefreshListener {
         pileTab.setIndicator("Pile");
         mTabHost.addTab(pileTab);
 
-        PullToRefreshLayout mPullToRefreshLayout = (PullToRefreshLayout) findViewById(R.id.ptr_layout);
-        ActionBarPullToRefresh.from(this)
-            // Mark All Children as pullable
-            .allChildrenArePullable()
-            // Set an OnRefreshListener
-            .listener(this)
-            // Finally commit the setup to our PullToRefreshLayout
-            .setup(mPullToRefreshLayout);
+//        PullToRefreshLayout mPullToRefreshLayout = (PullToRefreshLayout) findViewById(R.id.ptr_layout);
+//        ActionBarPullToRefresh.from(this)
+//            // Mark All Children as pullable
+//            .allChildrenArePullable()
+//            // Set an OnRefreshListener
+//            .listener(this)
+//            // Finally commit the setup to our PullToRefreshLayout
+//            .setup(mPullToRefreshLayout);
 
         ArrayList<Card> handCards = new ArrayList<Card>();
         handCardArrayAdapter = new CardArrayAdapter(this, handCards);
@@ -182,9 +189,8 @@ public class MainActivity extends Activity implements OnRefreshListener {
         });
         handCardArrayAdapter.setEnableUndo(true);
 
-        // TODO: needs to be moved to RenderActivity
-        addCardToHand(new HandPhraseCard(this, "Welcome!", "Bienvenue!", "Foursquare", "http://m.foursquare.com/checkIn"));
-        addCardToHand(new HandPhraseCard(this,"French", "le francais"));
+//        addCardToHand(new HandPhraseCard(this, "Welcome!", "Bienvenue!", "Foursquare", "http://m.foursquare.com/checkIn"));
+//        addCardToHand(new HandPhraseCard(this,"French", "le francais"));
 
         ArrayList<Card> pileCards = new ArrayList<Card>();
         pileCardArrayAdapter = new CardArrayAdapter(this, pileCards);
@@ -211,8 +217,24 @@ public class MainActivity extends Activity implements OnRefreshListener {
         });
         pileCardArrayAdapter.setEnableUndo(true);
 
+
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        System.out.println("Calling onStart");
+        displayHandCards();
+        displayPileCards();
+        saveCards();
+    }
+
+    @Override
+    public void onPause() {
+        System.out.println("Calling onPause");
+        super.onPause();
+        saveCards();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -294,8 +316,9 @@ public class MainActivity extends Activity implements OnRefreshListener {
 
         if (exception == null) {
             final String accessToken = tokenResponse.getAccessToken();
+            ParseInstallation.getCurrentInstallation().put("foursquareAccessToken", accessToken);
             // Success.
-            toastMessage(this, "Access token: " + accessToken);
+//            toastMessage(this, "Access token: " + accessToken);
 
             new Thread(new Runnable() {
                 @Override
@@ -339,10 +362,6 @@ public class MainActivity extends Activity implements OnRefreshListener {
                     System.out.println("parse database updated.");
                 }
             }).start();
-
-            // Go to the next screen yo
-//            mViewSwitcher.showNext();
-
         } else {
             if (exception instanceof FoursquareOAuthException) {
                 // OAuth error.
@@ -372,6 +391,118 @@ public class MainActivity extends Activity implements OnRefreshListener {
         startActivityForResult(intent, REQUEST_CODE_FSQ_TOKEN_EXCHANGE);
     }
 
+
+    private void displayHandCards() {
+        //handCardArrayAdapter.clear();
+
+        SharedPreferences sPrefs = getApplicationContext().getSharedPreferences("edu.mit.motley", Context.MODE_PRIVATE);
+        String currHand = sPrefs.getString("hand", null);
+
+        if (currHand != null) {
+            try {
+                JSONArray handArray = new JSONArray(currHand);
+                for (int i=handCardArrayAdapter.getCount(); i<handArray.length(); i++) {
+                    JSONObject cardJson = handArray.getJSONObject(i);
+                    HandPhraseCard hCard;
+                    if (cardJson.has("venue")) {
+                        hCard = new HandPhraseCard(this, cardJson.getString("fr"), cardJson.getString("eng"), cardJson.getString("venue"), cardJson.getString("link"));
+                    } else {
+                        hCard = new HandPhraseCard(this, cardJson.getString("fr"), cardJson.getString("eng"));
+                    }
+                    handCardArrayAdapter.insert(hCard, 0);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            handCardArrayAdapter.notifyDataSetChanged();
+        }
+
+    }
+
+    private void displayPileCards() {
+        pileCardArrayAdapter.clear();
+
+        String currPile = sPrefs.getString("pile", null);
+
+        if (currPile != null) {
+            pileCardArrayAdapter.clear();
+            try {
+                JSONArray pileArray = new JSONArray(currPile);
+                for (int i=0; i<pileArray.length(); i++) {
+                    JSONObject cardJson = pileArray.getJSONObject(i);
+                    PhraseCard pCard = new PhraseCard(this, cardJson.getString("fr"), cardJson.getString("eng"), cardJson.getString("venue"), cardJson.getString("link"));
+                    pileCardArrayAdapter.insert(pCard, 0);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            pileCardArrayAdapter.notifyDataSetChanged();
+        }
+
+    }
+
+    private void saveCards() {
+        JSONArray handArray = new JSONArray();
+        for (int i=0; i<handCardArrayAdapter.getCount(); i++) {
+            HandPhraseCard hCard = (HandPhraseCard) handCardArrayAdapter.getItem(i);
+            try {
+                JSONObject hCardJson = new JSONObject();
+                hCardJson.put("fr", hCard.getFrenchPhrase());
+                hCardJson.put("eng", hCard.getEnglishPhrase());
+                hCardJson.put("venue", hCard.getVenueName());
+                hCardJson.put("link", hCard.getVenueLink());
+                handArray.put(hCardJson);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        JSONArray pileArray = new JSONArray();
+        for (int i=0; i<pileCardArrayAdapter.getCount(); i++) {
+            PhraseCard pCard = (PhraseCard) pileCardArrayAdapter.getItem(i);
+            try {
+                JSONObject pCardJson = new JSONObject();
+                pCardJson.put("fr", pCard.getFrenchPhrase());
+                pCardJson.put("eng", pCard.getEnglishPhrase());
+                pCardJson.put("venue", pCard.getVenueName());
+                pCardJson.put("link", pCard.getVenueLink());
+                pileArray.put(pCardJson);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+//        System.out.println(handArray.toString());
+//        System.out.println(pileArray.toString());
+
+        SharedPreferences.Editor mEditor = sPrefs.edit();
+        mEditor.putString("hand", handArray.toString());
+        mEditor.putString("pile", pileArray.toString());
+        mEditor.commit();
+
+//        ParseInstallation.getCurrentInstallation().put("hand", handCardArrayAdapter);
+//        ParseInstallation.getCurrentInstallation().put("pile", pileCardArrayAdapter);
+
+//        ParseInstallation.getCurrentInstallation().put("hand", mHandCardAdapterArray);
+//        ParseInstallation.getCurrentInstallation().put("pile", GENDER_FEMALE);
+//        ParseInstallation.getCurrentInstallation().saveInBackground(new SaveCallback() {
+//            @Override
+//            public void done(ParseException e) {
+//                if (e == null) {
+//                    Toast toast = Toast.makeText(getApplicationContext(), R.string.alert_dialog_success, Toast.LENGTH_SHORT);
+//                    toast.show();
+//                } else {
+//                    e.printStackTrace();
+//
+//                    Toast toast = Toast.makeText(getApplicationContext(), R.string.alert_dialog_failed, Toast.LENGTH_SHORT);
+//                    toast.show();
+//                }
+//            }
+//        });
+    }
+
+
+
     public static void toastMessage(Context context, String message) {
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
     }
@@ -380,15 +511,10 @@ public class MainActivity extends Activity implements OnRefreshListener {
         Toast.makeText(context, t.getMessage(), Toast.LENGTH_SHORT).show();
     }
 
-    @Override
-    public void onRefreshStarted(View view) {
-        // TODO: get random new cards
-
-    }
-
     public void addCardToHand(HandPhraseCard card) {
         handCardArrayAdapter.insert(card, 0);
         handCardArrayAdapter.notifyDataSetChanged();
+
     }
 
     public void addCardToPile(PhraseCard card) {
@@ -405,21 +531,21 @@ public class MainActivity extends Activity implements OnRefreshListener {
 
     // here are all the URL things
 
-    public static String dateFoursquareAPIVerified = "?v=20140515";
+        public static String dateFoursquareAPIVerified = "?v=20140515";
 
-    public static String showVenue (String venueId) {
-        return "http://m.foursquare.com/venue/"+venueId;
-    }
-
+//        public static String showVenue (String venueId) {
+//            return "http://m.foursquare.com/venue/"+venueId;
+//        }
+//
 //    public static String checkIn (String venueId) {
 //        return "http://m.foursquare.com/checkin";
 //    }
-
-    public String reqVenueTips (String venueId, int limit, int offset) {
-        return "https://api.foursquare.com/v2/venues/"+venueId+"/tips"
-                +dateFoursquareAPIVerified+"&sort=recent&limit="+String.valueOf(limit)+"&offset="+String.valueOf(offset)+userlessReqParams;
-    }
-
+//
+//    public String reqVenueTips (String venueId, int limit, int offset) {
+//        return "https://api.foursquare.com/v2/venues/"+venueId+"/tips"
+//                +dateFoursquareAPIVerified+"&sort=recent&limit="+String.valueOf(limit)+"&offset="+String.valueOf(offset)+userlessReqParams;
+//    }
+//
     public String reqSelfData (String accessToken) {
         return "https://api.foursquare.com/v2/users/self"+dateFoursquareAPIVerified+"&oauth_token="+accessToken;
     }
