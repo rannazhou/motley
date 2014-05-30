@@ -27,6 +27,7 @@ import com.parse.ParseException;
 import com.parse.ParseInstallation;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
+import com.parse.PushService;
 
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
@@ -135,7 +136,7 @@ public class MainActivity extends Activity {
 
         }
 
-//        PushService.subscribe(this.getApplicationContext(), "user_"+deviceId, MainActivity.class);
+        PushService.subscribe(this.getApplicationContext(), "user_" + deviceId, MainActivity.class);
 
         setupUI();
 
